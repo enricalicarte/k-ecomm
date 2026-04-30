@@ -177,7 +177,60 @@ function FeaturedCategory({ props, initialProducts }: { props: any, initialProdu
                     </button>
                 </div>
             </div>
-            <div ref={scrollRef} className="flex-grow flex overflow-x-auto gap-6 hide-scrollbar snap-x md:snap-none relative pr-6 pb-4">
+            {/* Mobile layout: staggered vertical grid */}
+            <div className="md:hidden flex flex-col gap-16 w-full -mx-6 px-0 overflow-hidden">
+                {products.map((p, index) => {
+                    const isLeft = index % 2 === 0;
+                    const widthClass = index % 3 === 0 ? 'w-[85%]' : 'w-[75%]';
+                    
+                    return (
+                        <div key={p.id} className={`w-full flex flex-col ${isLeft ? 'items-start' : 'items-end'}`}>
+                            <Link href={`/producto/${p.slug || p.id}`} className={`group flex flex-col w-full ${widthClass}`}>
+                                <div className="aspect-[4/5] relative bg-gray-100 mb-4 overflow-hidden flex items-center justify-center">
+                                    {p.images?.[0] ? (
+                                        <MediaRenderer src={p.images[0]} fill className="object-cover group-hover:scale-105 transition-transform duration-700" alt={p.name} />
+                                    ) : (
+                                        <div className="w-16 border border-gray-300 aspect-[4/3] rounded flex items-center justify-center opacity-30">
+                                            <span className="text-[10px]">img</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={`px-6 flex flex-col gap-1 w-full ${isLeft ? 'text-left' : 'text-right'}`}>
+                                    <h4 className="font-sans font-medium text-lg text-charcoal">{p.name}</h4>
+                                    <p className="font-sans text-sm text-charcoal/70">${p.price} USD</p>
+                                </div>
+                            </Link>
+                        </div>
+                    );
+                })}
+            </div>
+            
+            {/* Mobile layout: staggered vertical grid empty states */}
+            {products.length === 0 && (
+                <div className="md:hidden flex flex-col gap-16 w-full -mx-6 px-0 overflow-hidden">
+                    {[1,2,3].map((i, index) => {
+                        const isLeft = index % 2 === 0;
+                        const widthClass = index % 3 === 0 ? 'w-[85%]' : 'w-[75%]';
+                        return (
+                            <div key={i} className={`w-full flex flex-col ${isLeft ? 'items-start' : 'items-end'}`}>
+                                <div className={`group flex flex-col w-full ${widthClass}`}>
+                                    <div className="aspect-[4/5] relative bg-gray-100 mb-4 overflow-hidden flex items-center justify-center">
+                                        <div className="w-16 border border-gray-300 aspect-[4/3] rounded flex items-center justify-center opacity-30">
+                                            <span className="text-[10px]">img</span>
+                                        </div>
+                                    </div>
+                                    <div className={`px-6 flex flex-col gap-1 w-full ${isLeft ? 'text-left' : 'text-right'}`}>
+                                        <h4 className="font-sans font-medium text-lg text-charcoal">Example Product Title</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            )}
+            
+            {/* Desktop layout: horizontal scroll overflow */}
+            <div ref={scrollRef} className="hidden md:flex flex-grow overflow-x-auto gap-6 hide-scrollbar snap-none relative pr-6 pb-4">
                 {products.map(p => (
                     <Link key={p.id} href={`/producto/${p.slug || p.id}`} className="flex-none w-[260px] md:w-[320px] group snap-start">
                         <div className="aspect-[4/5] relative bg-gray-100 mb-6 overflow-hidden flex items-center justify-center">
@@ -230,23 +283,22 @@ function LookbookGrid({ props, initialProducts }: { props: any, initialProducts:
     if (layoutStyle === 'editorial') {
         return (
             <section className="w-full flex flex-col bg-white overflow-hidden">
-                <div className="pt-32 pb-24 px-6 md:px-12 max-w-[1400px] mx-auto w-full">
+                <div className="pt-32 pb-24 md:px-12 max-w-[1400px] mx-auto w-full">
                     {props.lookbookTitle && (
-                        <h2 className="font-sans text-[clamp(4rem,10vw,8rem)] text-charcoal tracking-tighter leading-none mb-12 max-w-[100vw] break-words shrink-0">
+                        <h2 className="font-sans text-[clamp(4rem,10vw,8rem)] text-charcoal tracking-tighter leading-none mb-12 max-w-[100vw] break-words shrink-0 px-6 md:px-0">
                             {props.lookbookTitle}
                         </h2>
                     )}
                     {props.lookbookSubtitle && (
-                        <p className="font-sans text-xl text-charcoal/80 mb-10 max-w-md">
+                        <p className="font-sans text-xl text-charcoal/80 mb-10 max-w-md px-6 md:px-0">
                             {props.lookbookSubtitle}
                         </p>
                     )}
                     <div className="flex flex-col gap-24">
                         {products.map((p, i) => {
                             const isLeft = i % 2 === 0;
-                            // Alternate sizes, sometimes very large (w-3/4), sometimes smaller (w-1/2 or 2/5)
-                            const widthClass = i % 3 === 0 ? 'md:w-3/4 lg:w-2/3' : 'md:w-1/2';
-                            const aspectClass = i % 3 === 0 ? 'aspect-[4/3] md:aspect-[16/9]' : 'aspect-[3/4] md:aspect-square';
+                            const widthClass = i % 3 === 0 ? 'w-[85%] md:w-3/4 lg:w-2/3' : 'w-[75%] md:w-1/2';
+                            const aspectClass = i % 3 === 0 ? 'aspect-[4/5] md:aspect-[16/9]' : 'aspect-square md:aspect-square';
                             
                             return (
                                 <motion.div 
@@ -267,7 +319,7 @@ function LookbookGrid({ props, initialProducts }: { props: any, initialProducts:
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full gap-2">
+                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full gap-2 px-6 md:px-0">
                                             <h3 className="font-sans text-2xl lg:text-3xl font-medium text-charcoal">{p.name}</h3>
                                             <p className="font-sans text-lg text-charcoal/70">${p.price} USD</p>
                                         </div>

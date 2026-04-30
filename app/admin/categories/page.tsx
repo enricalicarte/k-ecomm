@@ -14,7 +14,6 @@ export default function CategoriesPage() {
     const [current, setCurrent] = useState<any>({});
 
     const fetchCategories = async () => {
-        setLoading(true);
         const qs = await getDocs(collection(db, 'categories'));
         const data: any[] = [];
         qs.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
@@ -23,7 +22,17 @@ export default function CategoriesPage() {
     };
 
     useEffect(() => {
-        fetchCategories();
+        let mounted = true;
+        const loadCats = async () => {
+            const qs = await getDocs(collection(db, 'categories'));
+            if (!mounted) return;
+            const data: any[] = [];
+            qs.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
+            setCategories(data);
+            setLoading(false);
+        };
+        loadCats();
+        return () => { mounted = false; };
     }, []);
 
     const handleSave = async (e: React.FormEvent) => {

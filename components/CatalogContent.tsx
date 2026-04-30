@@ -40,9 +40,9 @@ export default function CatalogContent({ initialProducts, initialBrands, initial
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 flex flex-col md:flex-row gap-16">
+    <div className="max-w-7xl mx-auto md:px-12 py-16 flex flex-col md:flex-row gap-16">
       {/* Sidebar Filters */}
-      <aside className="w-full md:w-64 shrink-0 font-mono">
+      <aside className="w-full md:w-64 shrink-0 font-mono px-6 md:px-0">
         <div className="sticky top-32 space-y-4">
           {initialCategories.map(category => (
             <button 
@@ -90,8 +90,8 @@ export default function CatalogContent({ initialProducts, initialBrands, initial
             {filteredProducts.map((product, index) => {
               const isLeft = index % 2 === 0;
               const isLarge = index % 3 === 0;
-              const widthClass = isLarge ? 'sm:w-[80%] xl:w-[70%]' : 'sm:w-[60%] xl:w-[50%]';
-              const aspectClass = isLarge ? 'aspect-[4/5] sm:aspect-[3/4]' : 'aspect-square sm:aspect-[4/5]';
+              const widthClass = isLarge ? 'w-[85%] sm:w-[80%] xl:w-[70%]' : 'w-[75%] sm:w-[60%] xl:w-[50%]';
+              const aspectClass = isLarge ? 'aspect-[4/5] sm:aspect-[3/4]' : 'aspect-[5/6] sm:aspect-[4/5]';
               
               return (
               <motion.div 
