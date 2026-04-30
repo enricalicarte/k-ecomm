@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // For local env testing allow all, but for production check emails. We'll enforce emails + email_verified
+    function isAdmin() {
+      return isSignedIn() && 
+        request.auth.token.email_verified == true && (
+          request.auth.token.email == 'enricalicarte@gmail.com' ||
+          request.auth.token.email == 'merchefernandezlorente@gmail.com'
+        );
+    }
+
+    match /analytics/{eventId} {
+      allow read: if isAdmin();
+      allow create: if incoming().keys().hasAll(['timestamp', 'type', 'path', 'visitorId']) &&
+                    incoming().type is string && incoming().type.size() <= 50 &&
+                    incoming().path is string && incoming().path.size() <= 200 &&
+                    incoming().visitorId is string && incoming().visitorId.size() <= 100;
+    }
+
+    match /blog/{postId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(postId);
+    }
+
+    match /carousels/{carouselId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(carouselId);
+    }
+
+    match /cms/{configId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(configId);
+    }
+
+    match /brands/{brandId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(brandId);
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin(); // ID might contain special chars like - from slug
+    }
+
+    match /page_layouts/{pageId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
+      // For demo, the app sets its own user document upon login
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+    }
+  }
+}

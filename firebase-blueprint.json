@@ -1,0 +1,132 @@
+{
+  "entities": {
+    "AnalyticsEvent": {
+      "title": "Analytics Event",
+      "description": "Public metrics of page usage",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "timestamp" },
+        "type": { "type": "string" },
+        "path": { "type": "string" },
+        "visitorId": { "type": "string" },
+        "metadata": { "type": "map" }
+      },
+      "required": ["timestamp", "type", "path", "visitorId"]
+    },
+    "BlogPost": {
+      "title": "Blog Post",
+      "description": "Blog content",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "tag": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "content": { "type": "string" },
+        "readTime": { "type": "number" },
+        "date": { "type": "string" },
+        "image": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "slug", "tag"]
+    },
+    "Carousel": {
+      "title": "Carousel",
+      "description": "Dynamic homepage component",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string" },
+        "source": { "type": "string" },
+        "filterValue": { "type": "string" },
+        "placement": { "type": "string" },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "title", "type"]
+    },
+    "CMS": {
+      "title": "CMS Content",
+      "description": "Singleton config docs",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "Brand": {
+      "title": "Brand",
+      "description": "Shoe Brand",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "logoText": { "type": "string" },
+        "origin": { "type": "string" },
+        "description": { "type": "string" },
+        "coverImage": { "type": "string" },
+        "isFeatured": { "type": "boolean" }
+      },
+      "required": ["id", "name", "slug"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Shoe Product",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "brand": { "type": "string" },
+        "price": { "type": "number" },
+        "category": { "type": "string" },
+        "subfamily": { "type": "string" },
+        "description": { "type": "string" },
+        "codigoProducto": { "type": "string" },
+        "sizes": { "type": "string" },
+        "images": { "type": "array" },
+        "image": { "type": "string" }
+      },
+      "required": ["name", "slug", "brand", "price"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Admin users",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "analytics/{eventId}": {
+      "schema": { "$ref": "#/entities/AnalyticsEvent" },
+      "description": "Analytics tracking events"
+    },
+    "blog/{postId}": {
+      "schema": { "$ref": "#/entities/BlogPost" },
+      "description": "Blog posts"
+    },
+    "carousels/{carouselId}": {
+      "schema": { "$ref": "#/entities/Carousel" },
+      "description": "Carousels"
+    },
+    "cms/{configId}": {
+      "schema": { "$ref": "#/entities/CMS" },
+      "description": "CMS config pages"
+    },
+    "brands/{brandId}": {
+      "schema": { "$ref": "#/entities/Brand" },
+      "description": "Shoe brands"
+    },
+    "products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Shoe products"
+    },
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Admin accounts"
+    }
+  }
+}
